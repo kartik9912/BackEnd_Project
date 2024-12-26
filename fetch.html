@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users - Terrain.com</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080') no-repeat center center/cover;
+            color: #fff;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #user-list {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .user-item {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .user-item:hover {
+            transform: scale(1.05); /* Slight scale effect on hover */
+            background: rgba(0, 0, 0, 0.7); /* Darker background on hover */
+        }
+
+        .user-item strong {
+            color: #ff6347;
+        }
+    </style>
+</head>
+<body>
+    <h1>List of Users</h1>
+    <div id="user-list">
+        <!-- User data will be displayed here -->
+    </div>
+
+    <script>
+        // Function to fetch users from the backend and display them
+        function fetchUsers() {
+            fetch('http://localhost:3000/users')
+                .then(response => response.json())
+                .then(data => {
+                    const userListContainer = document.getElementById('user-list');
+                    userListContainer.innerHTML = ''; // Clear existing data
+
+                    if (data.success && data.users.length > 0) {
+                        data.users.forEach(user => {
+                            const userItem = document.createElement('div');
+                            userItem.classList.add('user-item');
+                            userItem.innerHTML = `<strong>Full Name:</strong> ${user.name}<br><strong>Email:</strong> ${user.email}<br><strong>Password:</strong> ${user.password}`;
+                            userListContainer.appendChild(userItem);
+                        });
+                    } else {
+                        userListContainer.innerHTML = '<p>No users found.</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching users:', error);
+                });
+        }
+
+        // Fetch users when the page loads
+        window.onload = fetchUsers;
+    </script>
+</body>
+</html>
